@@ -3,7 +3,7 @@
 # Uses concurrency-safe operations from common.mod
 # ALL BUGS FIXED - Version 3.0
 # Added --name flag support
-# VERSION 1.1: Added timeout, retry, cpu, memory, project, array, queue, hooks
+# VERSION 1.0: Added timeout, retry, cpu, memory, project, array, queue, hooks
 
 # Parse arguments for job file, optional --name, and internal flags
 # Added --priority flag support
@@ -17,7 +17,7 @@ CLI_DEPENDS=""
 FROM_QUEUE=""
 QUEUE_JOB_WEIGHT=""
 
-# v1.1 Features
+# v1.0 Features
 CLI_TIMEOUT=""
 CLI_RETRY=""
 CLI_PROJECT=""
@@ -249,7 +249,7 @@ fi
 
 # PARSE JOB METADATA
 
-# Parse metadata from job file (WEIGHT, GPU, PRIORITY, and v1.1 directives)
+# Parse metadata from job file (WEIGHT, GPU, PRIORITY, and v1.0 directives)
 # Use preset values as defaults if preset was specified
 if [[ -n "$CLI_PRESET" ]]; then
     JOB_WEIGHT="${PRESET_WEIGHT:-10}"
@@ -261,7 +261,7 @@ else
     JOB_PRIORITY="${DEFAULT_JOB_PRIORITY:-normal}"
 fi
 
-# v1.1 metadata defaults
+# v1.0 metadata defaults
 JOB_TIMEOUT="N/A"
 JOB_RETRY_MAX="0"
 JOB_RETRY_DELAY="60"
@@ -296,67 +296,67 @@ while IFS= read -r line; do
         JOB_PRIORITY="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: TIMEOUT directive
+    # v1.0: TIMEOUT directive
     elif [[ "$line" =~ ^#[[:space:]]*TIMEOUT:[[:space:]]*([0-9]+[smhd]?)[[:space:]]*$ ]]; then
         JOB_TIMEOUT="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: RETRY directive
+    # v1.0: RETRY directive
     elif [[ "$line" =~ ^#[[:space:]]*RETRY:[[:space:]]*([0-9]+)[[:space:]]*$ ]]; then
         JOB_RETRY_MAX="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: RETRY_DELAY directive
+    # v1.0: RETRY_DELAY directive
     elif [[ "$line" =~ ^#[[:space:]]*RETRY_DELAY:[[:space:]]*([0-9]+)[[:space:]]*$ ]]; then
         JOB_RETRY_DELAY="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: RETRY_ON directive (exit codes)
+    # v1.0: RETRY_ON directive (exit codes)
     elif [[ "$line" =~ ^#[[:space:]]*RETRY_ON:[[:space:]]*([0-9,]+)[[:space:]]*$ ]]; then
         JOB_RETRY_ON="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: CPU directive
+    # v1.0: CPU directive
     elif [[ "$line" =~ ^#[[:space:]]*CPU:[[:space:]]*([0-9,-]+)[[:space:]]*$ ]]; then
         JOB_CPU="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: CORES directive (alias for CPU count)
+    # v1.0: CORES directive (alias for CPU count)
     elif [[ "$line" =~ ^#[[:space:]]*CORES:[[:space:]]*([0-9]+)[[:space:]]*$ ]]; then
         JOB_CPU="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: MEMORY directive
+    # v1.0: MEMORY directive
     elif [[ "$line" =~ ^#[[:space:]]*MEMORY:[[:space:]]*([0-9]+[KMGT%]?B?)[[:space:]]*$ ]]; then
         JOB_MEMORY="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: PROJECT directive
+    # v1.0: PROJECT directive
     elif [[ "$line" =~ ^#[[:space:]]*PROJECT:[[:space:]]*([^[:space:]]+)[[:space:]]*$ ]]; then
         JOB_PROJECT="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: GROUP directive
+    # v1.0: GROUP directive
     elif [[ "$line" =~ ^#[[:space:]]*GROUP:[[:space:]]*([^[:space:]]+)[[:space:]]*$ ]]; then
         JOB_GROUP="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: PRE_HOOK directive
+    # v1.0: PRE_HOOK directive
     elif [[ "$line" =~ ^#[[:space:]]*PRE_HOOK:[[:space:]]*(.+)[[:space:]]*$ ]]; then
         JOB_PRE_HOOK="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: POST_HOOK directive
+    # v1.0: POST_HOOK directive
     elif [[ "$line" =~ ^#[[:space:]]*POST_HOOK:[[:space:]]*(.+)[[:space:]]*$ ]]; then
         JOB_POST_HOOK="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: ON_FAIL directive
+    # v1.0: ON_FAIL directive
     elif [[ "$line" =~ ^#[[:space:]]*ON_FAIL:[[:space:]]*(.+)[[:space:]]*$ ]]; then
         JOB_ON_FAIL="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
 
-    # v1.1: ON_SUCCESS directive
+    # v1.0: ON_SUCCESS directive
     elif [[ "$line" =~ ^#[[:space:]]*ON_SUCCESS:[[:space:]]*(.+)[[:space:]]*$ ]]; then
         JOB_ON_SUCCESS="${BASH_REMATCH[1]}"
         skip_lines=$((skip_lines + 1))
@@ -386,14 +386,14 @@ done < "$JOB_FILE"
 # Override with CLI priority if provided
 [[ -n "$CLI_PRIORITY" ]] && JOB_PRIORITY="$CLI_PRIORITY"
 
-# v1.1: Override with CLI values if provided
+# v1.0: Override with CLI values if provided
 [[ -n "$CLI_TIMEOUT" ]] && JOB_TIMEOUT="$CLI_TIMEOUT"
 [[ -n "$CLI_RETRY" ]] && JOB_RETRY_MAX="$CLI_RETRY"
 [[ -n "$CLI_PROJECT" ]] && JOB_PROJECT="$CLI_PROJECT"
 [[ -n "$CLI_CPU" ]] && JOB_CPU="$CLI_CPU"
 [[ -n "$CLI_MEMORY" ]] && JOB_MEMORY="$CLI_MEMORY"
 
-# v1.1: Handle GPU auto-select
+# v1.0: Handle GPU auto-select
 if [[ "$GPU_SPEC" == "auto" ]]; then
     GPU_SPEC=$(auto_select_gpus 1)
     if [[ -z "$GPU_SPEC" ]]; then
@@ -648,10 +648,10 @@ LOG_FILE="${LOG_FILE_NAME/XXX/$JOB_INDEX}"
 
 # Create wrapper script that will execute the job
 # This approach completely eliminates command injection
-# v1.1: Enhanced with timeout, CPU affinity, memory limits, and hooks
+# v1.0: Enhanced with timeout, CPU affinity, memory limits, and hooks
 cat > "$JOB_PATH/.wrapper.sh" <<'WRAPPER_END'
 #!/bin/bash
-# Auto-generated job wrapper script (v1.1)
+# Auto-generated job wrapper script (v1.0)
 
 # Read parameters from arguments
 JOB_PATH_VAR="$1"
@@ -699,7 +699,7 @@ fi
 # Change to job directory
 cd "$JOB_PATH_VAR" || exit 1
 
-# v1.1: Execute pre-hook if specified
+# v1.0: Execute pre-hook if specified
 if [[ "$PRE_HOOK_VAR" != "N/A" && -n "$PRE_HOOK_VAR" ]]; then
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Executing pre-hook: $PRE_HOOK_VAR"
     eval "$PRE_HOOK_VAR"
@@ -718,7 +718,7 @@ fi
 # Build the execution command
 EXEC_CMD="bash command.run"
 
-# v1.1: Apply CPU affinity if specified
+# v1.0: Apply CPU affinity if specified
 if [[ "$CPU_VAR" != "N/A" && -n "$CPU_VAR" ]]; then
     if command -v taskset >/dev/null 2>&1; then
         # Check if it's a count (just a number) or a CPU list
@@ -736,7 +736,7 @@ if [[ "$CPU_VAR" != "N/A" && -n "$CPU_VAR" ]]; then
     fi
 fi
 
-# v1.1: Apply memory limit if specified
+# v1.0: Apply memory limit if specified
 if [[ "$MEMORY_VAR" != "N/A" && -n "$MEMORY_VAR" ]]; then
     # Parse memory spec
     mem_num="${MEMORY_VAR%[KMGT%]*}"
@@ -765,7 +765,7 @@ if [[ "$MEMORY_VAR" != "N/A" && -n "$MEMORY_VAR" ]]; then
     fi
 fi
 
-# v1.1: Apply timeout if specified
+# v1.0: Apply timeout if specified
 TIMEOUT_SECONDS=""
 if [[ "$TIMEOUT_VAR" != "N/A" && -n "$TIMEOUT_VAR" ]]; then
     TIMEOUT_SECONDS=$(parse_duration "$TIMEOUT_VAR")
@@ -777,7 +777,7 @@ if [[ "$TIMEOUT_VAR" != "N/A" && -n "$TIMEOUT_VAR" ]]; then
     fi
 fi
 
-# v1.1: Retry loop
+# v1.0: Retry loop
 RETRY_COUNT=0
 MAX_RETRIES="${RETRY_MAX_VAR:-0}"
 RETRY_DELAY="${RETRY_DELAY_VAR:-60}"
@@ -832,7 +832,7 @@ echo "END_TIME=$(date '+%Y-%m-%d %H:%M:%S')" >> job.info
 if [[ $EXIT_CODE -eq 0 ]]; then
     update_info "STATUS" "COMPLETED"
 
-    # v1.1: Execute on-success hook
+    # v1.0: Execute on-success hook
     if [[ "$ON_SUCCESS_VAR" != "N/A" && -n "$ON_SUCCESS_VAR" ]]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Executing on-success hook: $ON_SUCCESS_VAR"
         eval "$ON_SUCCESS_VAR"
@@ -840,14 +840,14 @@ if [[ $EXIT_CODE -eq 0 ]]; then
 else
     update_info "STATUS" "FAILED"
 
-    # v1.1: Execute on-fail hook
+    # v1.0: Execute on-fail hook
     if [[ "$ON_FAIL_VAR" != "N/A" && -n "$ON_FAIL_VAR" ]]; then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] Executing on-fail hook: $ON_FAIL_VAR"
         eval "$ON_FAIL_VAR"
     fi
 fi
 
-# v1.1: Execute post-hook if specified (runs regardless of exit code)
+# v1.0: Execute post-hook if specified (runs regardless of exit code)
 if [[ "$POST_HOOK_VAR" != "N/A" && -n "$POST_HOOK_VAR" ]]; then
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Executing post-hook: $POST_HOOK_VAR"
     eval "$POST_HOOK_VAR"
@@ -872,7 +872,7 @@ WRAPPER_END
 chmod +x "$JOB_PATH/.wrapper.sh"
 
 # Run the wrapper script with all parameters
-# v1.1: Added timeout, CPU, memory, hooks, and retry parameters
+# v1.0: Added timeout, CPU, memory, hooks, and retry parameters
 nohup "$JOB_PATH/.wrapper.sh" \
     "$JOB_PATH" \
     "$GPU_SPEC" \
