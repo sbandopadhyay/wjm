@@ -1,6 +1,6 @@
 #!/bin/bash
 # export.mod - Export job configurations
-# v1.1 Feature: Export job settings for reuse or sharing
+# v1.0 Feature: Export job settings for reuse or sharing
 
 # Parse arguments
 JOB_ID=""
@@ -136,7 +136,7 @@ export_json() {
   "_meta": {
     "exported": "$(date '+%Y-%m-%d %H:%M:%S')",
     "source_job": "$JOB_ID",
-    "wjm_version": "${WJM_VERSION:-1.1}"
+    "wjm_version": "${WJM_VERSION:-1.0}"
   },
   "job": {
     "name": "${JOB_NAME:-}",
