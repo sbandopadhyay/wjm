@@ -29,7 +29,7 @@ wjm -status
 # Job Submission
 wjm -qrun <script>              # Queue job
 wjm -srun <script>              # Run immediately
-wjm -qrun job.sh --timeout 2h --retry 3 --cpu 4 --memory 8G  # v1.1 options
+wjm -qrun job.sh --timeout 2h --retry 3 --cpu 4 --memory 8G  # v1.0 options
 
 # Monitoring
 wjm -status                     # Current jobs
@@ -45,7 +45,7 @@ wjm -pause <job_id>             # Pause job
 wjm -resume <job_id>            # Resume job
 wjm -resubmit <job_id>          # Retry job
 
-# v1.1 Features
+# v1.0 Features
 wjm -resources                  # Show system resources
 wjm -validate-config            # Validate configuration
 wjm -export <job_id> --format yaml  # Export job config
