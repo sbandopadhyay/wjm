@@ -83,7 +83,7 @@ wjm -template use my_template new_script.sh
 wjm -template list
 ```
 
-### Export/Import (v1.1)
+### Export/Import (v1.0)
 
 ```bash
 wjm -export job_001 --format yaml -o config.yaml
@@ -162,7 +162,7 @@ wjm -kill <job_id>
 wjm -pause <job_id>
 wjm -resume <job_id>
 
-# v1.1 Features
+# v1.0 Features
 wjm -resources
 wjm -export <job_id> --format yaml
 wjm -import --config file.yaml
