@@ -1,6 +1,6 @@
 #!/bin/bash
 cat << EOF
-WJM - Workstation Job Manager v1.1
+WJM - Workstation Job Manager v1.0
 ==================================
 
 USAGE:
@@ -39,7 +39,7 @@ COMMANDS:
     -abtest <script> <n>         Run A/B tests with different parameters
     -checkpoint <action>         Save/restore job checkpoints for recovery
 
-  v1.1 Features:
+  v1.0 Features:
     -resources                   Show system resources (CPU, memory, GPU)
     -validate-config             Validate configuration file
     -export <job_id> [OPTIONS]   Export job configuration to file
@@ -56,7 +56,7 @@ COMMANDS:
     --version, -v                Show version information
     -doctor                      Run system health check
 
-SUBMISSION OPTIONS (v1.1):
+SUBMISSION OPTIONS (v1.0):
   --name "Name"                  Friendly name for the job
   --priority <level>             Priority: urgent, high, normal, low
   --preset <name>                Preset: small, medium, large, gpu, urgent
@@ -68,7 +68,7 @@ SUBMISSION OPTIONS (v1.1):
   --memory <limit>               Memory limit (e.g., 8G, 512M, 50%)
   --array <spec>                 Job array (e.g., 1-100, 1-100:10)
 
-JOB FILE METADATA (v1.1):
+JOB FILE METADATA (v1.0):
   Basic:
     # WEIGHT: <number>           Job weight (default: 10)
     # GPU: <spec>                GPU IDs (0,1,2) or 'auto' or 'auto:N'
@@ -135,7 +135,7 @@ EXAMPLES:
     $SCRIPT_NAME -status
     $SCRIPT_NAME -watch job_001
 
-  v1.1 Features:
+  v1.0 Features:
     # Show system resources
     $SCRIPT_NAME -resources
 
