@@ -1,6 +1,6 @@
 # WJM - Workstation Job Manager
 
-Version 1.1.0 - Job scheduler for single workstations
+Version 1.0.0 - Job scheduler for single workstations
 
 ## What is WJM?
 
