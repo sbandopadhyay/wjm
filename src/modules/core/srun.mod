@@ -1,7 +1,7 @@
 #!/bin/bash
 # srun.mod - Immediate job execution (bypasses queue)
 # Uses concurrency-safe operations from common.mod
-# ALL BUGS FIXED - Version 3.0
+# ALL BUGS FIXED
 # Added --name flag support
 # VERSION 1.0: Added timeout, retry, cpu, memory, project, hooks
 
