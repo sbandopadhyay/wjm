@@ -3,7 +3,7 @@
 # Uses concurrency-safe operations from common.mod
 # ALL BUGS FIXED
 # Added --name flag support
-# Added --timeout, retry, cpu, memory, project, hooks
+# VERSION 1.0: Added timeout, retry, cpu, memory, project, hooks
 
 # Parse arguments for job file and optional --name
 # Added --priority flag support
