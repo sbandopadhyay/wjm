@@ -1,6 +1,6 @@
 #!/bin/bash
 # import.mod - Import job configurations
-# v1.1 Feature: Import job settings and apply to new submissions
+# v1.0 Feature: Import job settings and apply to new submissions
 
 # Parse arguments
 CONFIG_FILE=""
