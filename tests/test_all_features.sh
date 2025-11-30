@@ -67,7 +67,7 @@ trap cleanup EXIT
 
 section "TEST GROUP 1: Basic Functionality (Help, Config)"
 
-# Test 1.1: Help command
+# Test 1.0: Help command
 ./wjm --help > /dev/null 2>&1
 help_exit_code=$?
 if [[ $help_exit_code -eq 0 ]] || [[ $help_exit_code -eq 1 ]]; then
