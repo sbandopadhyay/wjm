@@ -17,7 +17,7 @@ _wjm_completions() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    # Main commands (v1.1 updated)
+    # Main commands (v1.0 updated)
     commands="-srun -qrun -status -list -info -logs -kill -pause -resume -signal -resubmit -clean -archive -watch -stats -visual -compare -profile -search -template -abtest -checkpoint -dashboard -tui -manage-logs -resources -validate-config -export -import -doctor --help --version"
 
     # Commands that take a job_id
@@ -137,7 +137,7 @@ _wjm_completions() {
     case "${COMP_WORDS[1]}" in
         -srun|-qrun)
             if [[ "$cur" == -* ]]; then
-                # v1.1: Added timeout, retry, cpu, memory, project, array options
+                # v1.0: Added timeout, retry, cpu, memory, project, array options
                 COMPREPLY=( $(compgen -W "--name --priority --preset --weight --depends-on --timeout --retry --cpu --memory --project --array" -- "$cur") )
                 return 0
             fi
