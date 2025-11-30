@@ -1,0 +1,74 @@
+# WEIGHT: 100
+# GPU: N/A
+# PRIORITY: high
+#!/bin/bash
+# OpenFOAM Case Example
+# Demonstrates environment sourcing and running OpenFOAM simulations
+
+echo "======================================"
+echo "OpenFOAM Job Starting"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# Source OpenFOAM environment
+# Adjust path to your OpenFOAM installation
+OPENFOAM_DIR="/opt/openfoam10"
+
+if [ -f "$OPENFOAM_DIR/etc/bashrc" ]; then
+    echo "Sourcing OpenFOAM environment from $OPENFOAM_DIR"
+    source "$OPENFOAM_DIR/etc/bashrc"
+    echo "OK: OpenFOAM environment loaded"
+else
+    echo "WARNING:  OpenFOAM not found at $OPENFOAM_DIR"
+    echo "   Using mock simulation for demonstration"
+fi
+
+# Verify OpenFOAM commands are available
+if command -v blockMesh &> /dev/null; then
+    echo "OK: blockMesh available"
+    echo "OK: OpenFOAM version: $(echo $WM_PROJECT_VERSION)"
+else
+    echo "WARNING:  OpenFOAM commands not in PATH (using mock mode)"
+fi
+
+echo ""
+echo "======================================"
+echo "Setting up case directory"
+echo "======================================"
+
+# Create a simple case directory structure
+CASE_DIR="$HOME/openfoam_jobs/cavity_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$CASE_DIR"/{0,constant,system}
+
+echo "Case directory: $CASE_DIR"
+echo ""
+
+# In a real scenario, you would:
+# 1. Copy your case files
+# 2. Run blockMesh
+# 3. Run your solver (e.g., icoFoam, simpleFoam, etc.)
+# 4. Post-process results
+
+# Example commands (commented out for demo):
+# cd "$CASE_DIR"
+# blockMesh > log.blockMesh 2>&1
+# icoFoam > log.icoFoam 2>&1
+# postProcess -func 'mag(U)' > log.postProcess 2>&1
+
+# Mock simulation
+echo "Running simulation (mock)..."
+for i in {1..5}; do
+    echo "  Time step $i/5 - Solving..."
+    sleep 1
+done
+
+echo ""
+echo "======================================"
+echo "Simulation Complete"
+echo "======================================"
+echo "Results saved to: $CASE_DIR"
+echo "End Time: $(date)"
+
+exit 0

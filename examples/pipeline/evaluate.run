@@ -1,0 +1,35 @@
+# WEIGHT: 10
+# PRIORITY: normal
+#!/bin/bash
+# Model Evaluation Example
+# This runs after training to evaluate model performance
+
+echo "Model Evaluation Job"
+echo "===================="
+
+MODEL_FILE="${1:-model.pkl}"
+TEST_DATA="${2:-test_data.csv}"
+
+echo "Model: $MODEL_FILE"
+echo "Test data: $TEST_DATA"
+
+echo ""
+echo "Loading model and test data..."
+sleep 1
+
+echo "Running predictions..."
+sleep 2
+
+echo "Calculating metrics..."
+sleep 1
+
+echo ""
+echo "Results:"
+echo "  Accuracy: 0.95"
+echo "  Precision: 0.93"
+echo "  Recall: 0.94"
+echo "  F1 Score: 0.935"
+
+echo ""
+echo "Evaluation complete!"
+exit 0

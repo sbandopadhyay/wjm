@@ -1,0 +1,91 @@
+# WEIGHT: 80
+# GPU: N/A
+# PRIORITY: normal
+#!/bin/bash
+# Gerris Flow Solver Example
+# Demonstrates running Gerris CFD simulations
+
+echo "======================================"
+echo "Gerris CFD Simulation Starting"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# Check for Gerris installation
+if command -v gerris2D &> /dev/null; then
+    echo "OK: Gerris found: $(gerris2D --version 2>&1 | head -1)"
+    GERRIS_CMD="gerris2D"
+elif command -v gerris3D &> /dev/null; then
+    echo "OK: Gerris found: $(gerris3D --version 2>&1 | head -1)"
+    GERRIS_CMD="gerris3D"
+else
+    echo " Gerris not found in PATH !"
+    echo " Using mock simulation for demonstration"
+    GERRIS_CMD="echo mock-gerris"
+fi
+
+echo ""
+echo "======================================"
+echo "Setting up simulation"
+echo "======================================"
+
+# Create working directory
+WORK_DIR="$HOME/gerris_jobs/flow_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+echo "Working directory: $WORK_DIR"
+echo ""
+
+# Create Gerris simulation file
+cat > simulation.gfs << 'GERRIS_SIM'
+# Gerris simulation example: 2D cavity flow
+1 0 GfsSimulation GfsBox GfsGEdge {} {
+    Time { end = 1.0 }
+    Refine 5
+
+    # Initial conditions
+    Init {} { U = 0 }
+
+    # Boundary conditions
+    # (simplified for example)
+
+    # Output
+    OutputTime { istep = 10 } stdout
+    OutputSimulation { step = 0.1 } output-%g.gfs
+}
+GfsBox {}
+GERRIS_SIM
+
+echo "Created Gerris input file: simulation.gfs"
+
+# Run Gerris simulation
+echo ""
+echo "Running simulation..."
+echo "Command: $GERRIS_CMD simulation.gfs"
+echo ""
+
+# Mock or real execution
+if [ "$GERRIS_CMD" = "echo mock-gerris" ]; then
+    for i in {1..5}; do
+        echo "  Time: $(echo "scale=2; $i*0.2" | bc)s - Iterating..."
+        sleep 1
+    done
+else
+    # Uncomment to run real simulation
+    # $GERRIS_CMD simulation.gfs 2>&1 | tee simulation.log
+    echo "  (Real simulation would run here)"
+fi
+
+echo ""
+echo "OK: Simulation complete"
+echo "  Output files: $WORK_DIR/output-*.gfs"
+
+echo ""
+echo "======================================"
+echo "Job Complete"
+echo "======================================"
+echo "End Time: $(date)"
+
+exit 0

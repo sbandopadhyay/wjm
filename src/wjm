@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# WJM - Workstation Job Manager
+# Version: 1.1.0
+# https://github.com/sbandopadhyay/wjm
+
+WJM_VERSION="1.1.0"
+WJM_RELEASE_DATE="2025-11-29"
+
+# Directory setup
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_NAME="$(basename "$0")"
+MODULES_DIR="$SCRIPT_DIR/modules"
+CONFIG_FILE="$SCRIPT_DIR/wjm.config"
+SCHEDULER_LOG="$SCRIPT_DIR/scheduler.log"
+
+# Log function
+log_action() { echo "$(date '+%Y-%m-%d %H:%M:%S') - $*" >> "$SCHEDULER_LOG"; }
+
+# Load custom config if provided
+if [[ "$1" == "--config" ]]; then
+    if [[ -f "$2" ]]; then
+        CONFIG_FILE="$2"
+        shift 2
+    else
+        echo "ERROR: Config file '$2' not found."
+        exit 1
+    fi
+fi
+
+# Ensure config file exists
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    cat <<EOF > "$CONFIG_FILE"
+# CONFIG FILE: wjm.config (Workstation Job Manager)
+JOB_DIR=\$HOME/job_logs
+QUEUE_DIR=\$JOB_DIR/queue
+ARCHIVE_DIR=\$JOB_DIR/archive
+MAX_CONCURRENT_JOBS=4
+MAX_TOTAL_WEIGHT=100
+DEFAULT_JOB_WEIGHT=10
+ARCHIVE_THRESHOLD=100
+LOG_FILE_NAME="job_XXX.log"
+WATCH_REFRESH_INTERVAL=3
+EOF
+    echo "Default config file created: $CONFIG_FILE"
+fi
+
+# Load config
+source "$CONFIG_FILE"
+
+# Load common utilities (must be after config)
+if [[ -f "$MODULES_DIR/utilities/common.mod" ]]; then
+    source "$MODULES_DIR/utilities/common.mod"
+else
+    echo "ERROR: common.mod not found"
+    exit 1
+fi
+
+# Load log management
+if [[ -f "$MODULES_DIR/utilities/logmanager.mod" ]]; then
+    source "$MODULES_DIR/utilities/logmanager.mod"
+fi
+
+validate_config
+cleanup_orphaned_pids
+
+# Validate we have a command
+if [[ -z "$1" ]]; then
+    echo "ERROR: No command specified"
+    echo ""
+    source "$MODULES_DIR/help.mod"
+    exit 1
+fi
+
+COMMAND="$1"
+shift
+
+case "$COMMAND" in
+    "-srun") source "$MODULES_DIR/core/srun.mod" "$@" ;;
+    "-qrun") source "$MODULES_DIR/core/qrun.mod" "$@" ;;
+    "-status") source "$MODULES_DIR/monitoring/status.mod" ;;
+    "-list") source "$MODULES_DIR/monitoring/list.mod" "$@" ;;
+    "-logs") source "$MODULES_DIR/monitoring/logs.mod" "$@" ;;
+    "-info") source "$MODULES_DIR/monitoring/info.mod" "$@" ;;
+    "-resubmit") source "$MODULES_DIR/control/resubmit.mod" "$@" ;;
+    "-clean") source "$MODULES_DIR/control/clean.mod" "$@" ;;
+    "-kill") source "$MODULES_DIR/control/kill.mod" "$@" ;;
+    "-pause") source "$MODULES_DIR/control/pause.mod" "$@" ;;
+    "-resume") source "$MODULES_DIR/control/resume.mod" "$@" ;;
+    "-signal") source "$MODULES_DIR/control/signal.mod" "$@" ;;
+    "-archive") source "$MODULES_DIR/control/archive.mod" ;;
+    "-watch") source "$MODULES_DIR/monitoring/watch.mod" "$@" ;;
+    "-manage-logs") source "$MODULES_DIR/utilities/managelogs.mod" ;;
+    "-stats") source "$MODULES_DIR/analytics/stats.mod" ;;
+    "-visual") source "$MODULES_DIR/analytics/visual.mod" ;;
+    "-template") source "$MODULES_DIR/utilities/templates.mod" "$@" ;;
+    "-search") source "$MODULES_DIR/utilities/search.mod" "$@" ;;
+    "-compare") source "$MODULES_DIR/analytics/compare.mod" "$@" ;;
+    "-dashboard") source "$MODULES_DIR/monitoring/dashboard.mod" ;;
+    "-abtest") source "$MODULES_DIR/utilities/abtest.mod" "$@" ;;
+    "-profile") source "$MODULES_DIR/analytics/profiler.mod" "$@" ;;
+    "-checkpoint") source "$MODULES_DIR/utilities/checkpoint.mod" "$@" ;;
+    "-tui") source "$MODULES_DIR/monitoring/tui.mod" ;;
+    "-resources") show_resources ;;
+    "-validate-config") validate_config_full ;;
+    "-export") source "$MODULES_DIR/utilities/export.mod" "$@" ;;
+    "-import") source "$MODULES_DIR/utilities/import.mod" "$@" ;;
+    "--help"|"-h") source "$MODULES_DIR/help.mod" ;;
+    "--version"|"-v"|"-V")
+        echo "WJM (Workstation Job Manager) v${WJM_VERSION}"
+        echo "Release date: ${WJM_RELEASE_DATE}"
+        echo "License: MIT"
+        echo "https://github.com/sbandopadhyay/wjm"
+        ;;
+    "-doctor")
+        echo "WJM Health Check"
+        echo "================"
+        echo "Version:      v${WJM_VERSION}"
+        echo "Config:       $CONFIG_FILE"
+        echo "Job Dir:      $JOB_DIR"
+        echo "Max Jobs:     $MAX_CONCURRENT_JOBS"
+        echo "Max Weight:   $MAX_TOTAL_WEIGHT"
+        echo ""
+        [[ -d "$JOB_DIR" ]] && echo "[OK] Job directory" || echo "[WARN] Job directory missing"
+        [[ -d "$QUEUE_DIR" ]] && echo "[OK] Queue directory" || echo "[WARN] Queue directory missing"
+        [[ -d "$ARCHIVE_DIR" ]] && echo "[OK] Archive directory" || echo "[WARN] Archive directory missing"
+        echo ""
+        running=$(find "$JOB_DIR" -name "job.pid" 2>/dev/null | wc -l)
+        queued=$(find "$QUEUE_DIR" -name "*.run" 2>/dev/null | wc -l)
+        echo "Running: $running, Queued: $queued"
+        ;;
+    *)
+        echo "ERROR: Unrecognized command: '$COMMAND'. Run '$SCRIPT_NAME --help' for usage info."
+        exit 1
+        ;;
+esac
+
+# Process queue after commands that might affect it
+if [[ "$COMMAND" =~ ^(-qrun|-kill|-archive)$ ]]; then
+    source "$MODULES_DIR/utilities/queue.mod"
+fi
+
+exit 0

@@ -1,0 +1,99 @@
+# WEIGHT: 50
+# GPU: N/A
+# PRIORITY: normal
+#!/bin/bash
+# Environment Modules Example
+# Demonstrates using Lmod/Environment Modules to load software
+
+echo "======================================"
+echo "Module Environment Example"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# Initialize module system if available
+if [ -f /etc/profile.d/modules.sh ]; then
+    echo "Initializing Environment Modules system"
+    source /etc/profile.d/modules.sh
+    echo "OK: Modules system loaded"
+elif [ -f /usr/share/lmod/lmod/init/bash ]; then
+    echo "Initializing Lmod system"
+    source /usr/share/lmod/lmod/init/bash
+    echo "OK: Lmod system loaded"
+else
+    echo " No module system found"
+    echo " Continuing without modules"
+fi
+
+echo ""
+echo "======================================"
+echo "Loading Software Modules"
+echo "======================================"
+
+# Load required modules (adjust to your environment)
+# Uncomment and modify for your HPC environment
+
+# Example: Load compiler and MPI
+# module load gcc/11.2.0
+# module load openmpi/4.1.2
+
+# Example: Load scientific software
+# module load python/3.10.2
+# module load matlab/R2022b
+# module load comsol/6.0
+
+# Show loaded modules
+if command -v module &> /dev/null; then
+    echo ""
+    echo "Currently loaded modules:"
+    module list
+else
+    echo "Mock module loading (no module system):"
+    echo "  gcc/11.2.0"
+    echo "  openmpi/4.1.2"
+    echo "  python/3.10.2"
+fi
+
+echo ""
+echo "======================================"
+echo "Custom Environment Variables"
+echo "======================================"
+
+# Set custom environment variables
+export MY_APP_HOME="/opt/myapp"
+export MY_DATA_DIR="$HOME/data"
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+
+echo "Custom variables set:"
+echo "  MY_APP_HOME: $MY_APP_HOME"
+echo "  MY_DATA_DIR: $MY_DATA_DIR"
+echo "  OMP_NUM_THREADS: $OMP_NUM_THREADS"
+echo "  MKL_NUM_THREADS: $MKL_NUM_THREADS"
+
+echo ""
+echo "======================================"
+echo "Running Application"
+echo "======================================"
+
+# Your application code here
+echo "Application would run here with loaded environment"
+echo ""
+
+# Simulate work
+for i in {1..3}; do
+    echo "  Processing step $i/3..."
+    sleep 1
+done
+
+echo ""
+echo "OK: Application complete"
+
+echo ""
+echo "======================================"
+echo "Job Complete"
+echo "======================================"
+echo "End Time: $(date)"
+
+exit 0

@@ -1,0 +1,27 @@
+# WEIGHT: 100
+# GPU: 0
+#!/bin/bash
+# GPU Training Example
+# This job uses GPU 0 and has weight 100
+
+echo "GPU Training Job Starting..."
+echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+
+# Check if GPU is available
+if command -v nvidia-smi &> /dev/null; then
+    echo "GPU Information:"
+    nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader
+else
+    echo "nvidia-smi not found - running in CPU mode"
+fi
+
+echo ""
+echo "Simulating model training..."
+for epoch in {1..5}; do
+    echo "Epoch $epoch/5 - Training..."
+    sleep 2
+done
+
+echo ""
+echo "Training complete!"
+exit 0

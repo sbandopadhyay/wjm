@@ -1,0 +1,17 @@
+# WEIGHT: 25
+#!/bin/bash
+# Weighted Job Example
+# This job has weight 25 (heavier than default 10)
+
+echo "This is a heavier job with weight 25"
+echo "It will consume more resources in the scheduler"
+
+# Simulate some CPU-intensive work
+echo "Starting computation..."
+for i in {1..10}; do
+    echo "Progress: $i/10"
+    sleep 1
+done
+
+echo "Computation complete!"
+exit 0

@@ -1,0 +1,32 @@
+# WEIGHT: 15
+# PRIORITY: high
+#!/bin/bash
+# Data Preprocessing Example
+# This is typically the first step in a data pipeline
+
+echo "Data Preprocessing Job"
+echo "======================"
+
+INPUT_FILE="${1:-data.csv}"
+OUTPUT_FILE="${2:-processed_data.csv}"
+
+echo "Input: $INPUT_FILE"
+echo "Output: $OUTPUT_FILE"
+
+echo ""
+echo "Loading data..."
+sleep 1
+
+echo "Cleaning data..."
+sleep 2
+
+echo "Normalizing values..."
+sleep 1
+
+echo "Removing outliers..."
+sleep 1
+
+echo ""
+echo "Preprocessing complete!"
+echo "Output saved to: $OUTPUT_FILE"
+exit 0

@@ -1,0 +1,19 @@
+#!/bin/bash
+# Python Script Example
+# This shows how to run Python scripts as jobs
+# Since wjm executes jobs with bash, we use a heredoc to run Python code
+
+python3 <<'PYTHON_CODE'
+import time
+import sys
+
+print("Python Job Starting...")
+print(f"Python version: {sys.version}")
+
+# Simulate work
+for i in range(1, 6):
+    print(f"Processing step {i}/5...")
+    time.sleep(1)
+
+print("Python job complete!")
+PYTHON_CODE

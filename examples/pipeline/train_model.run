@@ -1,0 +1,32 @@
+# WEIGHT: 50
+# PRIORITY: normal
+#!/bin/bash
+# Model Training Example
+# This runs after preprocessing
+
+echo "Model Training Job"
+echo "=================="
+
+TRAIN_DATA="${1:-processed_data.csv}"
+MODEL_OUTPUT="${2:-model.pkl}"
+
+echo "Training data: $TRAIN_DATA"
+echo "Model output: $MODEL_OUTPUT"
+
+echo ""
+echo "Initializing model..."
+sleep 1
+
+echo "Training epoch 1/10..."
+sleep 2
+
+echo "Training epoch 5/10..."
+sleep 2
+
+echo "Training epoch 10/10..."
+sleep 2
+
+echo ""
+echo "Model training complete!"
+echo "Model saved to: $MODEL_OUTPUT"
+exit 0

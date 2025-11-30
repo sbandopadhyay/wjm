@@ -1,0 +1,104 @@
+# WEIGHT: 150
+# GPU: N/A
+# PRIORITY: high
+#!/bin/bash
+# ANSYS Batch Mode Example
+# Demonstrates running ANSYS in batch/non-GUI mode
+
+echo "======================================"
+echo "ANSYS Batch Job Starting"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# Load ANSYS environment
+# Adjust paths to your ANSYS installation
+ANSYS_VERSION="2023R2"
+ANSYS_ROOT="/ansys_inc/v232"
+
+if [ -d "$ANSYS_ROOT" ]; then
+    echo "Setting up ANSYS $ANSYS_VERSION environment"
+
+    # Set ANSYS environment variables
+    export ANSYS_INC="$ANSYS_ROOT"
+    export PATH="$ANSYS_INC/ansys/bin:$PATH"
+    export PATH="$ANSYS_INC/fluent/bin:$PATH"
+    export PATH="$ANSYS_INC/cfx/bin:$PATH"
+
+    # Set license server (adjust to your setup)
+    export ANSYSLMD_LICENSE_FILE="1055@license-server.domain.com"
+
+    echo "OK: ANSYS environment configured"
+    echo "  ANSYS_INC: $ANSYS_INC"
+    echo "  License: $ANSYSLMD_LICENSE_FILE"
+else
+    echo " ANSYS not found at $ANSYS_ROOT !"
+    echo " Using mock simulation for demonstration"
+fi
+
+echo ""
+echo "======================================"
+echo "Running ANSYS Mechanical APDL (Batch)"
+echo "======================================"
+
+# Create working directory
+WORK_DIR="$HOME/ansys_jobs/analysis_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+echo "Working directory: $WORK_DIR"
+echo ""
+
+# Create ANSYS input file
+cat > input.inp << 'ANSYS_INPUT'
+/TITLE, Batch Mode Analysis Example
+/PREP7
+
+! Define material properties
+MP,EX,1,200e9     ! Young's modulus (Pa)
+MP,PRXY,1,0.3     ! Poisson's ratio
+
+! Define geometry and mesh
+! (simplified for example)
+
+/SOLU
+ANTYPE,STATIC
+SOLVE
+
+/POST1
+SET,LAST
+
+FINISH
+/EXIT
+ANSYS_INPUT
+
+echo "Created ANSYS input file: input.inp"
+
+# Run ANSYS in batch mode
+# Real command (commented for demo):
+# ansys232 -b -i input.inp -o output.out -np 4
+
+# Mock execution
+echo "Running: ansys -b -i input.inp -o output.out"
+echo "  Analysis type: Static structural"
+echo "  Processors: 4"
+echo ""
+
+for i in {1..5}; do
+    echo "  Step $i/5 - Computing..."
+    sleep 1
+done
+
+echo ""
+echo "OK: Analysis complete"
+echo "  Output: $WORK_DIR/output.out"
+echo "  Results: $WORK_DIR/file.rst"
+
+echo ""
+echo "======================================"
+echo "Job Complete"
+echo "======================================"
+echo "End Time: $(date)"
+
+exit 0

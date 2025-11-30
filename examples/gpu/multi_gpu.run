@@ -1,0 +1,27 @@
+# WEIGHT: 200
+# GPU: 0,1
+#!/bin/bash
+# Multi-GPU Example
+# This job uses GPUs 0 and 1
+
+echo "Multi-GPU Training Job Starting..."
+echo "CUDA_VISIBLE_DEVICES: $CUDA_VISIBLE_DEVICES"
+
+# Check GPUs
+if command -v nvidia-smi &> /dev/null; then
+    echo "Available GPUs:"
+    nvidia-smi --list-gpus
+else
+    echo "nvidia-smi not found - running in CPU mode"
+fi
+
+echo ""
+echo "Simulating distributed training..."
+for epoch in {1..3}; do
+    echo "Epoch $epoch/3 - Training on multiple GPUs..."
+    sleep 3
+done
+
+echo ""
+echo "Multi-GPU training complete!"
+exit 0

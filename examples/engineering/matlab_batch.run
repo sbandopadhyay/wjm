@@ -1,0 +1,116 @@
+# WEIGHT: 100
+# GPU: N/A
+# PRIORITY: normal
+#!/bin/bash
+# MATLAB Batch Mode Example
+# Demonstrates running MATLAB in headless/batch mode
+
+echo "======================================"
+echo "MATLAB Batch Job Starting"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# MATLAB installation (adjust to your setup)
+MATLAB_ROOT="/usr/local/MATLAB/R2023b"
+
+if [ -d "$MATLAB_ROOT" ]; then
+    echo "Setting up MATLAB environment"
+
+    # Add MATLAB to PATH
+    export PATH="$MATLAB_ROOT/bin:$PATH"
+
+    # Set license
+    export MLM_LICENSE_FILE="27000@license-server.domain.com"
+
+    echo "OK: MATLAB configured"
+    echo "  MATLAB_ROOT: $MATLAB_ROOT"
+else
+    echo " MATLAB not found at $MATLAB_ROOT !"
+    echo " Using mock execution"
+fi
+
+echo ""
+echo "======================================"
+echo "Creating MATLAB Script"
+echo "======================================"
+
+# Create working directory
+WORK_DIR="$HOME/matlab_jobs/analysis_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+echo "Working directory: $WORK_DIR"
+echo ""
+
+# Create MATLAB script
+cat > analysis.m << 'MATLAB_SCRIPT'
+% MATLAB Batch Analysis Script
+fprintf('MATLAB Analysis Starting\n');
+fprintf('MATLAB Version: %s\n', version);
+
+% Your analysis code here
+fprintf('\nRunning analysis...\n');
+
+% Example: Matrix operations
+A = rand(1000, 1000);
+B = rand(1000, 1000);
+
+fprintf('Computing matrix multiplication...\n');
+C = A * B;
+
+fprintf('Mean of result: %.4f\n', mean(C(:)));
+
+% Save results
+save('results.mat', 'C');
+
+fprintf('\nAnalysis complete!\n');
+fprintf('Results saved to: results.mat\n');
+
+% Exit with success
+exit(0);
+MATLAB_SCRIPT
+
+echo "Created MATLAB script: analysis.m"
+
+echo ""
+echo "======================================"
+echo "Running MATLAB"
+echo "======================================"
+
+# Run MATLAB in batch mode
+# Options:
+#   -batch: Run in batch mode (R2019a+)
+#   -nodisplay: No GUI
+#   -nosplash: No splash screen
+#   -nodesktop: No desktop
+#   -r "command": Run command
+
+# Real command (commented for demo):
+# matlab -batch "run('analysis.m')" > matlab.log 2>&1
+
+# Alternative for older MATLAB versions:
+# matlab -nodisplay -nosplash -r "run('analysis.m'); exit" > matlab.log 2>&1
+
+# Mock execution
+echo "Running: matlab -batch analysis.m"
+echo ""
+
+for i in {1..4}; do
+    echo "  Step $i/4 - Computing..."
+    sleep 1
+done
+
+echo ""
+echo "OK: MATLAB execution complete"
+echo "  Output: $WORK_DIR/results.mat"
+echo "  Log: $WORK_DIR/matlab.log"
+
+echo ""
+echo "======================================"
+echo "Job Complete"
+echo "======================================"
+echo "End Time: $(date)"
+
+exit 0

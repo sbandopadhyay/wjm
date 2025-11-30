@@ -1,0 +1,91 @@
+# WEIGHT: 200
+# GPU: N/A
+# PRIORITY: high
+#!/bin/bash
+# COMSOL Multiphysics Batch Mode Example
+# Demonstrates running COMSOL in batch mode with custom environment
+
+echo "======================================"
+echo "COMSOL Batch Job Starting"
+echo "======================================"
+echo "Job ID: $JOB_ID"
+echo "Start Time: $(date)"
+echo ""
+
+# COMSOL installation path (adjust to your setup)
+COMSOL_ROOT="/usr/local/comsol61/multiphysics"
+COMSOL_VERSION="6.1"
+
+if [ -d "$COMSOL_ROOT" ]; then
+    echo "Setting up COMSOL $COMSOL_VERSION environment"
+
+    # Set COMSOL environment
+    export COMSOL_HOME="$COMSOL_ROOT"
+    export PATH="$COMSOL_ROOT/bin:$PATH"
+
+    # Set license server
+    export LMCOMSOL_LICENSE_FILE="1718@license-server.domain.com"
+
+    # Java heap size for COMSOL
+    export COMSOL_JAVA_OPTS="-Xmx8g"
+
+    echo "OK: COMSOL environment configured"
+    echo "  COMSOL_HOME: $COMSOL_HOME"
+    echo "  Java heap: 8GB"
+else
+    echo " COMSOL not found at $COMSOL_ROOT !"
+    echo " Using mock simulation"
+fi
+
+echo ""
+echo "======================================"
+echo "Running COMSOL Simulation (Batch)"
+echo "======================================"
+
+# Create working directory
+WORK_DIR="$HOME/comsol_jobs/model_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR"
+
+echo "Working directory: $WORK_DIR"
+echo ""
+
+# COMSOL batch execution options:
+# -batch: Run in batch mode
+# -np <n>: Number of processors
+# -inputfile <file>: Input model file (.mph)
+# -outputfile <file>: Output file
+# -study <study>: Which study to run
+
+# Real command (commented for demo):
+# comsol batch \
+#   -np 8 \
+#   -inputfile model.mph \
+#   -outputfile results.mph \
+#   -study std1 \
+#   -batchlog batch.log
+
+# Mock execution
+echo "Running: comsol batch -np 8 -inputfile model.mph"
+echo "  Study: Stationary Analysis"
+echo "  Processors: 8"
+echo "  Memory: 8GB"
+echo ""
+
+for i in {1..5}; do
+    echo "  Computing step $i/5..."
+    sleep 1
+done
+
+echo ""
+echo "OK: Simulation complete"
+echo "  Results: $WORK_DIR/results.mph"
+echo "  Log: $WORK_DIR/batch.log"
+
+echo ""
+echo "======================================"
+echo "Job Complete"
+echo "======================================"
+echo "End Time: $(date)"
+
+exit 0
